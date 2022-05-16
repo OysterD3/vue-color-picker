@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import type { HSL, HSV, HSVA, RGB } from "../types";
 import {
   HexToHSVA,
@@ -37,18 +37,24 @@ const _hsva = ref<HSVA>({
   a: 1,
 });
 
+onMounted(() => {
+  const a = props.alpha || 1;
+  if (props.rgb) {
+    _hsva.value = RGBAtoHSVA({ ...props.rgb, a });
+  }
+  if (props.hex) {
+    _hsva.value = { ...HexToHSVA(props.hex), a };
+  }
+  if (props.hsv) {
+    _hsva.value = { ...props.hsv, a };
+  }
+  if (props.hsl) {
+    _hsva.value = HSLAtoHSVA({ ...props.hsl, a });
+  }
+});
+
 const hsva = computed<HSVA>({
   get() {
-    const a = props.alpha || 1;
-    if (props.rgb) {
-      return RGBAtoHSVA({ ...props.rgb, a });
-    }
-    if (props.hex) {
-      return { ...HexToHSVA(props.hex), a };
-    }
-    if (props.hsv) {
-      return { ...props.hsv, a };
-    }
     return _hsva.value;
   },
   set(val) {
