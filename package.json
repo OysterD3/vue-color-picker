@@ -1,0 +1,48 @@
+{
+  "name": "@oysterlee/vue-color-picker",
+  "files": ["dist"],
+  "main": "./dist/color-picker.umd.js",
+  "module": "./dist/color-picker.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/color-picker.es.js",
+      "require": "./dist/color-picker.umd.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && node ./scripts/build.js",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@oysterlee/utils": "^0.2.0",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@oysterlee/eslint-config": "^0.2.0",
+    "@types/node": "^17.0.33",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "eslint": "^8.15.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vite-plugin-dts": "^1.1.1",
+    "vitest": "^0.12.6",
+    "vue-tsc": "^0.34.7"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@oysterlee"
+    ],
+    "env": {
+      "vue/setup-compiler-macros": true
+    },
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    }
+  }
+}

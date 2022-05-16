@@ -1,0 +1,73 @@
+.vue-color-picker {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    aspect-ratio: 1;
+  }
+
+  &__saturation {
+    position: relative;
+    flex-grow: 1;
+    border-color: transparent;
+    border-bottom: 12px solid #000;
+    border-radius: 8px 8px 0 0;
+    background-image: linear-gradient(0deg, #000, transparent),
+    linear-gradient(90deg, #fff, hsla(0, 0%, 100%, 0));
+
+    & > .vue-color-picker__marker {
+      z-index: 3;
+    }
+  }
+
+  &__marker {
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border-radius: 999px;
+    border: 3px solid white;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__hue {
+    position: relative;
+    height: 24px;
+    background: linear-gradient(
+        90deg,
+        red 0,
+        #ff0 17%,
+        #0f0 33%,
+        #0ff 50%,
+        #00f 67%,
+        #f0f 83%,
+        red
+    );
+
+    & > .vue-color-picker__marker {
+      z-index: 2;
+    }
+  }
+
+
+
+  &__alpha {
+    position: relative;
+    height: 24px;
+    background-color: #fff;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAgMAAADw5/WeAAAACVBMVEXv7+/Z2dnb29vRbS1MAAAAGUlEQVQI12NgYGANDSWD5ASSoaEBQBZZJACN1RCfaTkNgAAAAABJRU5ErkJggg==);
+
+    &-background {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    & > .vue-color-picker__marker {
+      z-index: 1;
+    }
+  }
+}
