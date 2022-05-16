@@ -93,6 +93,5 @@ export const HSLAtoRGBA = (hsla: HSLA): RGBA => {
   };
 };
 
-export const HSLtoHex = (hsla: HSLA): string => RGBAtoHex(HSLAtoRGBA(hsla));
 export const HexToHSVA = (hex: string): HSVA => RGBAtoHSVA(HexToRGBA(hex));
 export const HSVAToHex = (hsva: HSVA): string => RGBAtoHex(HSVAtoRGBA(hsva));

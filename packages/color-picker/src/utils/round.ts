@@ -1,5 +1,3 @@
-export const roundHalf = (n: number) => Math.round(n * 2) / 2;
-
 export const round = (
   n: number,
   decimal = 2,
