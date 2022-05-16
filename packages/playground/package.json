@@ -1,0 +1,6 @@
+{
+  "name": "playground",
+  "dependencies": {
+    "@oysterlee/vue-color-picker": "workspace:*"
+  }
+}

@@ -9,7 +9,7 @@ const dts = require("vite-plugin-dts");
     build: {
       outDir: "dist",
       lib: {
-        entry: path.resolve(__dirname, "../packages/color-picker/src/index.ts"),
+        entry: "src/index.ts",
         name: "ColorPicker",
         fileName: (format) => `color-picker.${format}.js`,
       },
@@ -19,6 +19,7 @@ const dts = require("vite-plugin-dts");
           globals: {
             vue: "Vue",
           },
+          exports: "named",
         },
       },
     },

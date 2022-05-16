@@ -1,47 +1,13 @@
 {
-  "name": "@oysterlee/vue-color-picker",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/color-picker.umd.js",
-  "module": "./dist/color-picker.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/color-picker.es.js",
-      "require": "./dist/color-picker.umd.js"
-    }
-  },
-  "types": "./dist/index.d.ts",
-  "author": "Oyster Lee <oysterd3@gmail.com>",
-  "keywords": [
-    "vue",
-    "vue-color-picker",
-    "color",
-    "color-picker"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "homepage": "https://github.com/OysterD3/vue-color-picker#readme",
-  "bugs": {
-    "url": "https://github.com/OysterD3/vue-color-picker/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OysterD3/vue-color-picker.git"
-  },
-  "license": "MIT",
-  "version": "0.0.1-beta.1",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && node ./scripts/build.js",
+    "build": "pnpm --filter @oysterlee/vue-color-picker build",
     "preview": "vite preview",
     "test": "vitest",
-    "release": "bumpp package.json --commit --push --tag && pnpm -r publish --access public"
+    "release": "pnpm --filter @oysterlee/vue-color-picker release"
   },
   "dependencies": {
-    "@oysterlee/utils": "^0.2.0",
-    "vue": "^3.2.25"
+    "vue": "^3.2.33"
   },
   "devDependencies": {
     "@oysterlee/eslint-config": "^0.2.0",

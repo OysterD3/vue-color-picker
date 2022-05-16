@@ -5,6 +5,7 @@ import { HexToHSVA, HSVAToHex, HSVAtoRGBA, RGBAtoHSVA } from "../utils/convert";
 import Alpha from "./common/Alpha.vue";
 import Hue from "./common/Hue.vue";
 import Saturation from "./common/Saturation.vue";
+import "../styles/index.scss";
 
 const props = defineProps<{
   rgb?: RGB;
