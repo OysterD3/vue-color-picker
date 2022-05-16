@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import type { HSV, HSVA, RGB } from "../types";
-import { HexToHSVA, HSVAToHex, HSVAtoRGBA, RGBAtoHSVA } from "../utils/convert";
+import type { HSL, HSV, HSVA, RGB } from "../types";
+import {
+  HexToHSVA,
+  HSLAtoHSVA,
+  HSVAToHex,
+  HSVAtoHSLA,
+  HSVAtoRGBA,
+  RGBAtoHSVA,
+} from "../utils/convert";
 import Alpha from "./common/Alpha.vue";
 import Hue from "./common/Hue.vue";
 import Saturation from "./common/Saturation.vue";
@@ -11,6 +18,7 @@ const props = defineProps<{
   rgb?: RGB;
   hex?: string;
   hsv?: HSV;
+  hsl?: HSL;
   alpha?: number;
 }>();
 
@@ -18,6 +26,7 @@ const emit = defineEmits<{
   (e: "update:rgb", val: RGB): void;
   (e: "update:hex", val: string): void;
   (e: "update:hsv", val: HSV): void;
+  (e: "update:hsl", val: HSL): void;
   (e: "update:alpha", val: number): void;
 }>();
 
@@ -50,6 +59,9 @@ const hsva = computed<HSVA>({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { a: _, ...rgb } = HSVAtoRGBA(val);
     emit("update:rgb", rgb);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { a: a1, ...hsl } = HSVAtoHSLA(val);
+    emit("update:hsl", hsl);
 
     _hsva.value = val;
   },

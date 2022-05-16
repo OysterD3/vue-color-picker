@@ -27,6 +27,8 @@ export const HexToRGBA = (hex: string): RGBA => {
       };
 };
 
+export const HexToHSVA = (hex: string): HSVA => RGBAtoHSVA(HexToRGBA(hex));
+
 export const RGBAtoHSVA = (rgba: RGBA): HSVA => {
   const { r, g, b, a } = rgba;
   const v = Math.max(r, g, b),
@@ -55,6 +57,21 @@ export const RGBAtoHex = (rgba: RGBA): string => {
   );
 };
 
+export const RGBAtoHSLA = (rgba: RGBA): HSLA => {
+  const { r, g, b, a } = rgba;
+  const v = Math.max(r, g, b),
+    c = v - Math.min(r, g, b),
+    f = 1 - Math.abs(v + v - c - 1);
+  const h =
+    c && (v == r ? (g - b) / c : v == g ? 2 + (b - r) / c : 4 + (r - g) / c);
+  return {
+    h: 60 * (h < 0 ? h + 6 : h),
+    s: f ? c / f : 0,
+    l: (v + v - c) / 2,
+    a,
+  };
+};
+
 export const HSVAtoRGBA = (hsva: HSVA): RGBA => {
   const { h, a } = hsva;
   let { s, v } = hsva;
@@ -70,6 +87,8 @@ export const HSVAtoRGBA = (hsva: HSVA): RGBA => {
   };
 };
 
+export const HSVAtoHSLA = (hsva: HSVA): HSLA => RGBAtoHSLA(HSVAtoRGBA(hsva));
+
 export const HSVAtoRGBString = (hsva: HSVA): string => {
   const { r, g, b } = HSVAtoRGBA(hsva);
   return `rgb(${r}, ${g}, ${b})`;
@@ -79,6 +98,8 @@ export const HSVAtoRGBAString = (hsva: HSVA): string => {
   const { r, g, b, a } = HSVAtoRGBA(hsva);
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+
+export const HSVAToHex = (hsva: HSVA): string => RGBAtoHex(HSVAtoRGBA(hsva));
 
 export const HSLAtoRGBA = (hsla: HSLA): RGBA => {
   const { h, s, l, a } = hsla;
@@ -93,5 +114,4 @@ export const HSLAtoRGBA = (hsla: HSLA): RGBA => {
   };
 };
 
-export const HexToHSVA = (hex: string): HSVA => RGBAtoHSVA(HexToRGBA(hex));
-export const HSVAToHex = (hsva: HSVA): string => RGBAtoHex(HSVAtoRGBA(hsva));
+export const HSLAtoHSVA = (hsla: HSLA): HSVA => RGBAtoHSVA(HSLAtoRGBA(hsla));
