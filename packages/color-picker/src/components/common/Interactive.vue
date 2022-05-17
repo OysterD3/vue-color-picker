@@ -10,10 +10,20 @@ const emit = defineEmits<{
 
 const handlePointerDown = (e: PointerEvent) => {
   if (interactive.value) {
+    const rect = (interactive.value as HTMLDivElement).getBoundingClientRect();
+    emit("move", {
+      top: clampPercentage(
+        ((e.y - rect.top) /
+          (interactive.value as HTMLDivElement).offsetHeight) *
+          100,
+      ),
+      left: clampPercentage(
+        ((e.x - rect.left) /
+          (interactive.value as HTMLDivElement).offsetWidth) *
+          100,
+      ),
+    });
     interactive.value.onpointermove = (ev) => {
-      const rect = (
-        interactive.value as HTMLDivElement
-      ).getBoundingClientRect();
       emit("move", {
         top: clampPercentage(
           ((ev.y - rect.top) /
