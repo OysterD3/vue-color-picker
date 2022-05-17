@@ -15,7 +15,7 @@
     background-image: linear-gradient(0deg, #000, transparent),
     linear-gradient(90deg, #fff, hsla(0, 0%, 100%, 0));
 
-    & > .vue-color-picker__marker {
+    & .vue-color-picker__marker {
       z-index: 3;
     }
   }
@@ -44,7 +44,7 @@
         red
     );
 
-    & > .vue-color-picker__marker {
+    & .vue-color-picker__marker {
       z-index: 2;
     }
   }
@@ -59,16 +59,20 @@
     border-radius: 0 0 8px 8px;
 
     &-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
       border-radius: 0 0 8px 8px;
     }
 
-    & > .vue-color-picker__marker {
+    & .vue-color-picker__marker {
       z-index: 1;
     }
+  }
+
+  &__interactive,
+  &__alpha-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }

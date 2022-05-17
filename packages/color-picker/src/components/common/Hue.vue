@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import type { HSVA } from "../../types";
-import { clampPercentage } from "../../utils/clamp";
+import { ref } from "vue";
+import type { HSVA, Interaction } from "../../types";
 import { HSVAtoRGBString } from "../../utils/convert";
 import { round } from "../../utils/round";
+import Interactive from "./Interactive.vue";
 import Marker from "./Marker.vue";
 
 const hue = ref<HTMLDivElement | null>(null);
@@ -16,33 +16,13 @@ const emit = defineEmits<{
   (e: "update:modelValue", val: HSVA): void;
 }>();
 
-const startDragHue = (e: PointerEvent) => {
-  if (hue.value) {
-    hue.value.onpointermove = (ev) => {
-      const rect = (hue.value as HTMLDivElement).getBoundingClientRect();
-
-      const percentage = round(
-        clampPercentage(
-          ((ev.x - rect.left) / (hue.value as HTMLDivElement).offsetWidth) *
-            100,
-        ),
-      );
-      emit(
-        "update:modelValue",
-        Object.assign({}, props.modelValue, {
-          h: round((360 * percentage) / 100, 0),
-        }),
-      );
-    };
-    hue.value.setPointerCapture(e.pointerId);
-  }
-};
-
-const stopDragHue = (e: PointerEvent) => {
-  if (hue.value) {
-    hue.value.onpointermove = null;
-    hue.value.releasePointerCapture(e.pointerId);
-  }
+const handleMove = ({ left }: Interaction) => {
+  emit(
+    "update:modelValue",
+    Object.assign({}, props.modelValue, {
+      h: round((360 * left) / 100, 0),
+    }),
+  );
 };
 </script>
 
@@ -53,16 +33,18 @@ const stopDragHue = (e: PointerEvent) => {
     @pointerdown="startDragHue"
     @pointerup="stopDragHue"
   >
-    <Marker
-      :color="
-        HSVAtoRGBString({
-          h: props.modelValue.h,
-          s: 100,
-          v: 100,
-          a: 1,
-        })
-      "
-      :left="(modelValue.h / 360) * 100"
-    />
+    <Interactive @move="handleMove">
+      <Marker
+        :color="
+          HSVAtoRGBString({
+            h: props.modelValue.h,
+            s: 100,
+            v: 100,
+            a: 1,
+          })
+        "
+        :left="(modelValue.h / 360) * 100"
+      />
+    </Interactive>
   </div>
 </template>
