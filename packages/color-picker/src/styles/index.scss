@@ -22,10 +22,10 @@
 
   &__marker {
     position: absolute;
-    height: 28px;
-    width: 28px;
+    height: 25px;
+    width: 25px;
     border-radius: 999px;
-    border: 3px solid white;
+    border: 2px solid white;
     top: 50%;
     transform: translate(-50%, -50%);
   }
@@ -59,12 +59,12 @@
     border-radius: 0 0 8px 8px;
 
     &-background {
-      content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
+      border-radius: 0 0 8px 8px;
     }
 
     & > .vue-color-picker__marker {
