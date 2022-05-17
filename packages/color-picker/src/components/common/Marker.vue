@@ -14,7 +14,7 @@ const props = withDefaults(
 );
 
 const style = computed(() => ({
-  top: props.top ? `${props.top}%` : undefined,
+  top: props.top >= 0 && props.left <= 100 ? `${props.top}%` : undefined,
   left: `${props.left}%`,
   backgroundColor: props.color,
 }));
