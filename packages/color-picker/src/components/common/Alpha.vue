@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { HSVA } from "../../types";
 import { clampPercentage } from "../../utils/clamp";
 import { HSVAtoRGBA, HSVAtoRGBAString } from "../../utils/convert";
+import Marker from "./Marker.vue";
 
 const alpha = ref<HTMLDivElement | null>(null);
 
@@ -18,17 +19,6 @@ const backgroundStyle = computed(() => {
   const { r, g, b } = HSVAtoRGBA(props.modelValue);
   return {
     backgroundImage: `linear-gradient(90deg, rgba(${r}, ${g}, ${b}, 0), rgb(${r}, ${g}, ${b}))`,
-  };
-});
-
-const markerStyle = computed(() => {
-  let left = "0";
-  if (alpha.value) {
-    left = `${props.modelValue.a * 100}%`;
-  }
-  return {
-    left,
-    backgroundColor: HSVAtoRGBAString(props.modelValue),
   };
 });
 
@@ -70,6 +60,9 @@ const stopDragAlpha = (e: PointerEvent) => {
       :style="backgroundStyle"
       class="vue-color-picker__alpha-background"
     ></div>
-    <div :style="markerStyle" class="vue-color-picker__marker"></div>
+    <Marker
+      :left="props.modelValue.a * 100"
+      :color="HSVAtoRGBAString(props.modelValue)"
+    />
   </div>
 </template>

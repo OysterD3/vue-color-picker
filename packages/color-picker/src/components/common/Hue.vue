@@ -4,6 +4,7 @@ import type { HSVA } from "../../types";
 import { clampPercentage } from "../../utils/clamp";
 import { HSVAtoRGBString } from "../../utils/convert";
 import { round } from "../../utils/round";
+import Marker from "./Marker.vue";
 
 const hue = ref<HTMLDivElement | null>(null);
 
@@ -14,18 +15,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", val: HSVA): void;
 }>();
-
-const markerStyle = computed(() => {
-  return {
-    backgroundColor: HSVAtoRGBString({
-      h: props.modelValue.h,
-      s: 100,
-      v: 100,
-      a: 1,
-    }),
-    left: `${(props.modelValue.h / 360) * 100}%`,
-  };
-});
 
 const startDragHue = (e: PointerEvent) => {
   if (hue.value) {
@@ -64,6 +53,16 @@ const stopDragHue = (e: PointerEvent) => {
     @pointerdown="startDragHue"
     @pointerup="stopDragHue"
   >
-    <div :style="markerStyle" class="vue-color-picker__marker"></div>
+    <Marker
+      :color="
+        HSVAtoRGBString({
+          h: props.modelValue.h,
+          s: 100,
+          v: 100,
+          a: 1,
+        })
+      "
+      :left="(modelValue.h / 360) * 100"
+    />
   </div>
 </template>

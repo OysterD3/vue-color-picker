@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { clampPercentage } from "../../utils/clamp";
 import type { HSVA } from "../../types";
 import { HSVAtoRGBString } from "../../utils/convert";
+import Marker from "./Marker.vue";
 
 const props = defineProps<{
   modelValue: HSVA;
@@ -21,29 +22,9 @@ const style = computed(() => ({
   }),
 }));
 
-const markerStyle = computed(() => ({
-  top: `${100 - props.modelValue.v}%`,
-  left: `${props.modelValue.s}%`,
-  backgroundColor: HSVAtoRGBString(
-    Object.assign({}, props.modelValue, { a: 1 }),
-  ),
-}));
-
-const marker = ref<HTMLDivElement | null>(null);
 const saturation = ref<HTMLDivElement | null>(null);
 
 const startDragSaturation = (e: PointerEvent) => {
-  const rect = (saturation.value as HTMLDivElement).getBoundingClientRect();
-  if (marker.value) {
-    marker.value.style.top = `${clampPercentage(
-      ((e.y - rect.top) / (saturation.value as HTMLDivElement).offsetHeight) *
-        100,
-    )}%`;
-    marker.value.style.left = `${clampPercentage(
-      ((e.x - rect.left) / (saturation.value as HTMLDivElement).offsetWidth) *
-        100,
-    )}%`;
-  }
   if (saturation.value) {
     saturation.value.onpointermove = (ev) => {
       const rect = (saturation.value as HTMLDivElement).getBoundingClientRect();
@@ -57,11 +38,6 @@ const startDragSaturation = (e: PointerEvent) => {
           (saturation.value as HTMLDivElement).offsetWidth) *
           100,
       );
-
-      if (marker.value) {
-        marker.value.style.top = `${top}%`;
-        marker.value.style.left = `${left}%`;
-      }
       emit(
         "update:modelValue",
         Object.assign({}, props.modelValue, {
@@ -90,10 +66,10 @@ const stopDragSaturation = (e: PointerEvent) => {
     @pointerdown="startDragSaturation"
     @pointerup="stopDragSaturation"
   >
-    <div
-      ref="marker"
-      :style="markerStyle"
-      class="vue-color-picker__marker"
-    ></div>
+    <Marker
+      :top="100 - props.modelValue.v"
+      :left="props.modelValue.s"
+      :color="HSVAtoRGBString(Object.assign({}, modelValue, { a: 1 }))"
+    />
   </div>
 </template>
