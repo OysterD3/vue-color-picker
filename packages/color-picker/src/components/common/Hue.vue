@@ -27,12 +27,7 @@ const handleMove = ({ left }: Interaction) => {
 </script>
 
 <template>
-  <div
-    ref="hue"
-    class="vue-color-picker__hue"
-    @pointerdown="startDragHue"
-    @pointerup="stopDragHue"
-  >
+  <div ref="hue" class="vue-color-picker__hue">
     <Interactive @move="handleMove">
       <Marker
         :color="
