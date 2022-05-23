@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev:playground": "pnpm --filter playground dev",
     "build": "pnpm --filter @oysterlee/vue-color-picker build",
     "preview": "vite preview",
     "test": "vitest",

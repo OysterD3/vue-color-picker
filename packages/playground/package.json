@@ -1,5 +1,8 @@
 {
   "name": "playground",
+  "scripts": {
+    "dev": "vite"
+  },
   "dependencies": {
     "@oysterlee/vue-color-picker": "workspace:*"
   }

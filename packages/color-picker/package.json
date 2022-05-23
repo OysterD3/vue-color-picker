@@ -10,7 +10,7 @@
       "import": "./dist/color-picker.es.js",
       "require": "./dist/color-picker.umd.js"
     },
-    "./dist/style.css": {
+    "./style.css": {
       "import": "./dist/style.css",
       "require": "./dist/style.css"
     }
@@ -37,9 +37,7 @@
   "license": "MIT",
   "version": "0.0.1-beta.4",
   "scripts": {
-    "dev": "vite",
     "build": "vue-tsc --noEmit && node ./scripts/build.js",
-    "preview": "vite preview",
     "release": "bumpp package.json --commit --push --tag && pnpm -r publish --access public"
   },
   "dependencies": {
