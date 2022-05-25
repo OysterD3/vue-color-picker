@@ -37,7 +37,7 @@
   "license": "MIT",
   "version": "0.0.1-beta.4",
   "scripts": {
-    "build": "vue-tsc --noEmit && node ./scripts/build.js",
+    "build": "vue-tsc --noEmit && ts-node ./scripts/build.ts && ts-node ./scripts/build-utils.ts",
     "release": "bumpp package.json --commit --push --tag && pnpm -r publish --access public"
   },
   "dependencies": {

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require("path");
-const { build } = require("vite");
-const vue = require("@vitejs/plugin-vue");
-const dts = require("vite-plugin-dts");
+import path from "path";
+import { build } from "vite";
+import vue from "@vitejs/plugin-vue";
+import dts from "vite-plugin-dts";
 
 (async () => {
   await build({
@@ -27,6 +26,12 @@ const dts = require("vite-plugin-dts");
       vue(),
       dts({
         tsConfigFilePath: path.resolve(__dirname, "../tsconfig.json"),
+        include: [
+          "src/components/**/*.vue",
+          "src/index.ts",
+          "src/types/index.ts",
+          "src/utils/convert.ts",
+        ],
       }),
     ],
   });
