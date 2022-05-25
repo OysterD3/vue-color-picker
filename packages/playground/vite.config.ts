@@ -10,6 +10,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@oysterlee/vue-color-picker/utils": resolve(
+        __dirname,
+        "../color-picker/src/utils/index.ts",
+      ),
       "@oysterlee/vue-color-picker": resolve(
         __dirname,
         "../color-picker/src/index.ts",

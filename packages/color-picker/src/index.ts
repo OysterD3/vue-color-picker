@@ -7,4 +7,5 @@ const ColorPickerPlugin: Plugin = {
   },
 };
 export { ColorPicker };
+export * from "./types";
 export default ColorPickerPlugin;

@@ -8,3 +8,5 @@ export type Interaction = {
   top: number;
   left: number;
 };
+export type Color = RGB | HSV | HSL | string;
+export type AvailableColorType = "rgb" | "hex" | "hsl" | "hsv";

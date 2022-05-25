@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import type { HSL, HSV, HSVA, RGB } from "../types";
+import { computed, onMounted, ref, watch } from "vue";
+import type { AvailableColorType, Color, HSL, HSV, HSVA, RGB } from "../types";
 import {
   HexToHSVA,
   HSLAtoHSVA,
@@ -9,24 +9,27 @@ import {
   HSVAtoRGBA,
   RGBAtoHSVA,
 } from "../utils/convert";
+import { isHex, isHSL, isHSV, isRGB } from "../utils/is";
 import Alpha from "./common/Alpha.vue";
 import Hue from "./common/Hue.vue";
 import Saturation from "./common/Saturation.vue";
 import "../styles/index.scss";
 
-const props = defineProps<{
-  rgb?: RGB;
-  hex?: string;
-  hsv?: HSV;
-  hsl?: HSL;
-  alpha?: number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    mode?: AvailableColorType;
+    modelValue?: Color;
+    alpha?: number;
+  }>(),
+  {
+    mode: "rgb",
+    alpha: 1,
+    modelValue: undefined,
+  },
+);
 
 const emit = defineEmits<{
-  (e: "update:rgb", val: RGB): void;
-  (e: "update:hex", val: string): void;
-  (e: "update:hsv", val: HSV): void;
-  (e: "update:hsl", val: HSL): void;
+  (e: "update:modelValue", val: Color): void;
   (e: "update:alpha", val: number): void;
 }>();
 
@@ -37,21 +40,37 @@ const _hsva = ref<HSVA>({
   a: 1,
 });
 
+const triggerChange = (data?: Color) => {
+  const v = data || props.modelValue;
+  if (props.mode === "rgb" && isRGB(v)) {
+    _hsva.value = RGBAtoHSVA({ ...(v as RGB), a: props.alpha });
+  }
+  if (props.mode === "hex" && isHex(v)) {
+    _hsva.value = { ...HexToHSVA(v as string), a: props.alpha };
+  }
+  if (props.mode === "hsv" && isHSV(v)) {
+    _hsva.value = { ...(v as HSV), a: props.alpha };
+  }
+  if (props.mode === "hsl" && isHSL(v)) {
+    _hsva.value = HSLAtoHSVA({ ...(v as HSL), a: props.alpha });
+  }
+};
+
 onMounted(() => {
-  const a = props.alpha || 1;
-  if (props.rgb) {
-    _hsva.value = RGBAtoHSVA({ ...props.rgb, a });
-  }
-  if (props.hex) {
-    _hsva.value = { ...HexToHSVA(props.hex), a };
-  }
-  if (props.hsv) {
-    _hsva.value = { ...props.hsv, a };
-  }
-  if (props.hsl) {
-    _hsva.value = HSLAtoHSVA({ ...props.hsl, a });
-  }
+  triggerChange();
 });
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val) {
+      triggerChange(val);
+    }
+  },
+  {
+    deep: true,
+  },
+);
 
 const hsva = computed<HSVA>({
   get() {
@@ -59,16 +78,27 @@ const hsva = computed<HSVA>({
   },
   set(val) {
     const { a, ...hsv } = val;
-    emit("update:hsv", hsv);
     emit("update:alpha", a);
-    emit("update:hex", HSVAToHex(val));
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { a: _, ...rgb } = HSVAtoRGBA(val);
-    emit("update:rgb", rgb);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { a: a1, ...hsl } = HSVAtoHSLA(val);
-    emit("update:hsl", hsl);
-
+    switch (props.mode) {
+      case "hex":
+        emit("update:modelValue", HSVAToHex(val));
+        break;
+      case "hsl": {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { a: _, ...hsl } = HSVAtoHSLA(val);
+        emit("update:modelValue", hsl);
+        break;
+      }
+      case "hsv":
+        emit("update:modelValue", hsv);
+        break;
+      case "rgb": {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { a: _, ...rgb } = HSVAtoRGBA(val);
+        emit("update:modelValue", rgb);
+        break;
+      }
+    }
     _hsva.value = val;
   },
 });

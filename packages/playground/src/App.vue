@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import "../../color-picker/src/styles/index.scss";
-import type { RGB, HSV, HSL } from "@oysterlee/vue-color-picker/dist/types";
+import type { RGB, HSV, HSL } from "@oysterlee/vue-color-picker";
+import {
+  HexToRGBA,
+  HSLAtoRGBA,
+  HSVAtoRGBA,
+} from "@oysterlee/vue-color-picker/utils";
 import { computed, ref, watch } from "vue";
 
 const rgb = ref<RGB>({
@@ -20,6 +25,7 @@ const hsl = ref<HSL>({
 });
 const hex = ref("#FF0000");
 const alpha = ref(1);
+const mode = ref("rgb");
 
 const luminance = computed(() => {
   const { r, g, b } = rgb.value;
@@ -27,6 +33,21 @@ const luminance = computed(() => {
 });
 
 const textColor = computed(() => (luminance.value > 0.5 ? "#000" : "#fff"));
+
+watch(hsv, (val) => {
+  const { a, ...v } = HSVAtoRGBA({ ...val, a: 1 });
+  rgb.value = v;
+});
+
+watch(hsl, (val) => {
+  const { a, ...v } = HSLAtoRGBA({ ...val, a: 1 });
+  rgb.value = v;
+});
+
+watch(hex, (val) => {
+  const { a, ...v } = HexToRGBA(val);
+  rgb.value = v;
+});
 
 watch(
   [rgb, alpha],
@@ -44,36 +65,44 @@ watch(
 <template>
   <main>
     <div class="vue-color-picker-playground__container">
-      <VColorPicker v-model:rgb="rgb" v-model:alpha="alpha" />
+      <VColorPicker v-model="rgb" v-model:alpha="alpha" :mode="mode" />
       <div
         class="vue-color-picker-playground__input-group"
         :style="{ color: textColor }"
       >
-        <label>RGB</label>
-        <div class="vue-color-picker-playground__input-wrapper">
-          <input v-model.number="rgb.r" />
-          <input v-model.number="rgb.g" />
-          <input v-model.number="rgb.b" />
-        </div>
+        <template v-if="mode === 'rgb'">
+          <label>RGB</label>
+          <div class="vue-color-picker-playground__input-wrapper">
+            <input v-model.number="rgb.r" />
+            <input v-model.number="rgb.g" />
+            <input v-model.number="rgb.b" />
+          </div>
+        </template>
 
-        <label>HSV</label>
-        <div class="vue-color-picker-playground__input-wrapper">
-          <input v-model.number="hsv.h" />
-          <input v-model.number="hsv.s" />
-          <input v-model.number="hsv.v" />
-        </div>
+        <template v-else-if="mode === 'hsv'">
+          <label>HSV</label>
+          <div class="vue-color-picker-playground__input-wrapper">
+            <input v-model.number="hsv.h" />
+            <input v-model.number="hsv.s" />
+            <input v-model.number="hsv.v" />
+          </div>
+        </template>
 
-        <label>HSL</label>
-        <div class="vue-color-picker-playground__input-wrapper">
-          <input v-model.number="hsl.h" />
-          <input v-model.number="hsl.s" />
-          <input v-model.number="hsl.l" />
-        </div>
+        <template v-else-if="mode === 'hsl'">
+          <label>HSL</label>
+          <div class="vue-color-picker-playground__input-wrapper">
+            <input v-model.number="hsl.h" />
+            <input v-model.number="hsl.s" />
+            <input v-model.number="hsl.l" />
+          </div>
+        </template>
 
-        <label>Hex</label>
-        <div class="vue-color-picker-playground__input-wrapper">
-          <input v-model="hex" style="width: 200px" />
-        </div>
+        <template v-else-if="mode === 'hex'">
+          <label>Hex</label>
+          <div class="vue-color-picker-playground__input-wrapper">
+            <input v-model="hex" style="width: 200px" />
+          </div>
+        </template>
       </div>
     </div>
   </main>
