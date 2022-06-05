@@ -3,6 +3,7 @@
  * I have modified some part based on the answer given by Kamil
  */
 import type { RGBA, HSVA, HSLA } from "../types";
+import { clampPercentage } from "./clamp";
 import { round } from "./round";
 
 export const HexToRGBA = (hex: string): RGBA => {
@@ -30,15 +31,26 @@ export const HexToRGBA = (hex: string): RGBA => {
 export const HexToHSVA = (hex: string): HSVA => RGBAtoHSVA(HexToRGBA(hex));
 
 export const RGBAtoHSVA = (rgba: RGBA): HSVA => {
-  const { r, g, b, a } = rgba;
-  const v = Math.max(r, g, b),
-    c = v - Math.min(r, g, b);
-  const h =
-    c && (v == r ? (g - b) / c : v == g ? 2 + (b - r) / c : 4 + (r - g) / c);
+  // eslint-disable-next-line prefer-const
+  let { r, g, b, a } = rgba;
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const diff = max - min;
+  let h = 0;
+  if (max === r) {
+    h = 60 * (((g - b) / diff) % 6);
+  } else if (max === g) {
+    h = 60 * ((b - r) / diff + 2);
+  } else if (max === b) {
+    h = 60 * ((r - g) / diff + 4);
+  }
   return {
-    h: 60 * (h < 0 ? h + 6 : h),
-    s: round(v && (c / v) * 100),
-    v: round((v / 255) * 100),
+    h: round(h, 0),
+    s: round((max ? diff / max : 0) * 100),
+    v: round(max * 100),
     a,
   };
 };
@@ -58,16 +70,30 @@ export const RGBAtoHex = (rgba: RGBA): string => {
 };
 
 export const RGBAtoHSLA = (rgba: RGBA): HSLA => {
-  const { r, g, b, a } = rgba;
-  const v = Math.max(r, g, b),
-    c = v - Math.min(r, g, b),
-    f = 1 - Math.abs(v + v - c - 1);
-  const h =
-    c && (v == r ? (g - b) / c : v == g ? 2 + (b - r) / c : 4 + (r - g) / c);
+  // eslint-disable-next-line prefer-const
+  let { r, g, b, a } = rgba;
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const diff = max - min;
+
+  let h = 0;
+  if (max === r) {
+    h = 60 * (((g - b) / diff) % 6);
+  } else if (max === g) {
+    h = 60 * ((b - r) / diff + 2);
+  } else if (max === b) {
+    h = 60 * ((r - g) / diff + 4);
+  }
+
+  const l = (max + min) / 2;
+
   return {
-    h: 60 * (h < 0 ? h + 6 : h),
-    s: f ? c / f : 0,
-    l: (v + v - c) / 2,
+    h,
+    s: round((diff ? diff / (1 - Math.abs(2 * l - 1)) : 0) * 100, 2),
+    l: round(l * 100, 2),
     a,
   };
 };
@@ -102,14 +128,34 @@ export const HSVAtoRGBAString = (hsva: HSVA): string => {
 export const HSVAToHex = (hsva: HSVA): string => RGBAtoHex(HSVAtoRGBA(hsva));
 
 export const HSLAtoRGBA = (hsla: HSLA): RGBA => {
-  const { h, s, l, a } = hsla;
-  const c = s * Math.min(l, 1 - l);
-  const f = (n: number, k = (n + h / 30) % 12) =>
-    l - c * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  const { h, a } = hsla;
+  let { s, l } = hsla;
+  s /= 100;
+  l /= 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let rgb = { r: 0, g: 0, b: 0 };
+  if (0 <= h && h < 60) {
+    rgb = { r: c, g: x, b: 0 };
+  } else if (h < 120) {
+    rgb = { r: x, g: c, b: 0 };
+  } else if (h < 180) {
+    rgb = { r: 0, g: c, b: x };
+  } else if (h < 240) {
+    rgb = { r: 0, g: x, b: c };
+  } else if (h < 300) {
+    rgb = { r: x, g: 0, b: c };
+  } else {
+    rgb = { r: c, g: 0, b: x };
+  }
+
+  const { r, g, b } = rgb;
+
   return {
-    r: f(0),
-    g: f(8),
-    b: f(4),
+    r: round((r + m) * 255, 0),
+    g: round((g + m) * 255, 0),
+    b: round((b + m) * 255, 0),
     a,
   };
 };
