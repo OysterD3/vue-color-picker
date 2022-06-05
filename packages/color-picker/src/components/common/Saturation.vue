@@ -32,7 +32,6 @@ const handleMove = ({ top, left }: Interaction) => {
     top,
     left,
   };
-  console.log(top, left);
   emit(
     "update:modelValue",
     Object.assign({}, props.modelValue, {
