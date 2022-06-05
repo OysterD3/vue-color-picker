@@ -39,7 +39,7 @@
     "url": "git+https://github.com/OysterD3/vue-color-picker.git"
   },
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "build": "vue-tsc --noEmit && ts-node ./scripts/build.ts",
     "release": "bumpp package.json --commit --push --tag && pnpm -r publish --access public"
