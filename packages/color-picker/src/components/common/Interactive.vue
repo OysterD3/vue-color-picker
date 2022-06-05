@@ -6,9 +6,11 @@ import { clampPercentage } from "../../utils/clamp";
 const interactive = ref<HTMLDivElement | null>(null);
 const emit = defineEmits<{
   (e: "move", val: Required<Interaction>): void;
+  (e: "update:moving", val: boolean): void;
 }>();
 
 const handlePointerDown = (e: PointerEvent) => {
+  emit("update:moving", true);
   if (interactive.value) {
     const rect = (interactive.value as HTMLDivElement).getBoundingClientRect();
     emit("move", {
@@ -42,6 +44,7 @@ const handlePointerDown = (e: PointerEvent) => {
 };
 
 const handlePointerUp = (e: PointerEvent) => {
+  emit("update:moving", false);
   if (interactive.value) {
     interactive.value.onpointermove = null;
     interactive.value.releasePointerCapture(e.pointerId);

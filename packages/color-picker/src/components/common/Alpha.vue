@@ -5,14 +5,13 @@ import { HSVAtoRGBA, HSVAtoRGBAString } from "../../utils/convert";
 import Interactive from "./Interactive.vue";
 import Marker from "./Marker.vue";
 
-const alpha = ref<HTMLDivElement | null>(null);
-
 const props = defineProps<{
   modelValue: HSVA;
 }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", val: HSVA): void;
+  (e: "update:moving", val: boolean): void;
 }>();
 
 const backgroundStyle = computed(() => {
@@ -33,8 +32,11 @@ const handleMove = ({ left }: Interaction) => {
 </script>
 
 <template>
-  <div class="vue-color-picker__alpha">
-    <Interactive @move="handleMove">
+  <div class="vue-color-picker__alpha" :data-alpha="props.modelValue.a">
+    <Interactive
+      @update:moving="emit('update:moving', $event)"
+      @move="handleMove"
+    >
       <div
         :style="backgroundStyle"
         class="vue-color-picker__alpha-background"

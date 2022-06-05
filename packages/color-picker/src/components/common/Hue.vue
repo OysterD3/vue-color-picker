@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", val: HSVA): void;
+  (e: "update:moving", val: boolean): void;
 }>();
 
 const handleMove = ({ left }: Interaction) => {
@@ -27,8 +28,11 @@ const handleMove = ({ left }: Interaction) => {
 </script>
 
 <template>
-  <div ref="hue" class="vue-color-picker__hue">
-    <Interactive @move="handleMove">
+  <div ref="hue" class="vue-color-picker__hue" :data-hue="props.modelValue.h">
+    <Interactive
+      @update:moving="emit('update:moving', $event)"
+      @move="handleMove"
+    >
       <Marker
         :color="
           HSVAtoRGBString({

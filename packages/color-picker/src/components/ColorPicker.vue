@@ -40,6 +40,8 @@ const _hsva = ref<HSVA>({
   a: 1,
 });
 
+const isMoving = ref(false);
+
 const triggerChange = (data?: Color) => {
   const v = data || props.modelValue;
   if (props.mode === "rgb" && isRGB(v)) {
@@ -63,7 +65,7 @@ onMounted(() => {
 watch(
   () => props.modelValue,
   (val) => {
-    if (val) {
+    if (val && !isMoving.value) {
       triggerChange(val);
     }
   },
@@ -106,8 +108,8 @@ const hsva = computed<HSVA>({
 
 <template>
   <div class="vue-color-picker__container">
-    <Saturation v-model="hsva" />
-    <Hue v-model="hsva" />
-    <Alpha v-model="hsva" />
+    <Saturation v-model:moving="isMoving" v-model="hsva" />
+    <Hue v-model:moving="isMoving" v-model="hsva" />
+    <Alpha v-model:moving="isMoving" v-model="hsva" />
   </div>
 </template>

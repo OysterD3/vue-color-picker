@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import type { HSVA, Interaction } from "../../types";
 import { HSVAtoRGBString } from "../../utils/convert";
+import { round } from "../../utils/round";
 import Interactive from "./Interactive.vue";
 import Marker from "./Marker.vue";
 
@@ -9,13 +10,9 @@ const props = defineProps<{
   modelValue: HSVA;
 }>();
 
-const position = ref({
-  top: 100 - props.modelValue.v,
-  left: props.modelValue.s,
-});
-
 const emit = defineEmits<{
   (e: "update:modelValue", val: HSVA): void;
+  (e: "update:moving", val: boolean): void;
 }>();
 
 const style = computed(() => ({
@@ -28,26 +25,30 @@ const style = computed(() => ({
 }));
 
 const handleMove = ({ top, left }: Interaction) => {
-  position.value = {
-    top,
-    left,
-  };
   emit(
     "update:modelValue",
     Object.assign({}, props.modelValue, {
-      s: left,
-      v: 100 - top,
+      s: round(left),
+      v: round(100 - top),
     }),
   );
 };
 </script>
 
 <template>
-  <div class="vue-color-picker__saturation" :style="style">
-    <Interactive @move="handleMove">
+  <div
+    class="vue-color-picker__saturation"
+    :style="style"
+    :data-saturation="props.modelValue.s"
+    :data-value="props.modelValue.v"
+  >
+    <Interactive
+      @update:moving="emit('update:moving', $event)"
+      @move="handleMove"
+    >
       <Marker
-        :top="position.top"
-        :left="position.left"
+        :top="100 - props.modelValue.v"
+        :left="props.modelValue.s"
         :color="HSVAtoRGBString(Object.assign({}, modelValue, { a: 1 }))"
       />
     </Interactive>
