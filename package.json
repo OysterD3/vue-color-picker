@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "pnpm --filter playground dev",
     "build": "pnpm --filter @oysterlee/vue-color-picker build",
+    "build:demo": "pnpm --filter playground build",
     "preview": "vite preview",
     "test": "vitest",
     "release": "pnpm --filter @oysterlee/vue-color-picker release"
